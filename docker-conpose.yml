@@ -1,0 +1,45 @@
+version: '3'  # Especifica la versión de Docker Compose
+
+services:
+  mongodb:                                                    # Servicio para MongoDB
+    image: mongo                                              # Imagen de MongoDB oficial
+    container_name: mongodb                                   # Nombre del contenedor MongoDB
+    ports:
+      - "27017:27017"                                         # Expone el puerto 27017 para acceso externo (para pruebas o conexión directa)
+    volumes:
+      - mongodb_data:/data/db                                 # Volumen nombrado para persistencia de datos en MongoDB
+    networks:
+      - app-network                                           # Red compartida entre los servicios para permitir la comunicación interna
+    environment:
+      MONGO_INITDB_DATABASE: gestion-datos                    # Inicializa MongoDB con una base de datos llamada gestion-datos
+    restart: unless-stopped                                   # Reinicia automáticamente el servicio a menos que se detenga manualmente
+
+  backend:                                                    # Servicio para el backend (API Gateway)
+    build: ./Backend                                          # Usa el Dockerfile en la carpeta Backend para construir la imagen
+    container_name: backend                                   # Nombre del contenedor para el backend
+    ports:
+      - "5000:5000"                                           # Expone el puerto 5000 para que el frontend y otras APIs puedan acceder al backend
+    depends_on:
+      - mongodb                                               # Asegura que MongoDB esté listo antes de iniciar el backend
+    networks: 
+      - app-network                                           # Red compartida para que el backend se comunique con MongoDB
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/gestion-datos        # URI para conectar con MongoDB dentro de la red
+      PORT: 5000                                              # Puerto en el que correrá el backend
+    restart: unless-stopped                                   # Reinicia automáticamente el servicio a menos que se detenga manualmente
+
+  frontend:                                                   # Servicio para el frontend (React)
+    build: ./Frontend                                         # Usa el Dockerfile en la carpeta Frontend para construir la imagen
+    container_name: frontend                                  # Nombre del contenedor para el frontend
+    ports:
+      - "3000:3000"                                           # Expone el puerto 3000 para que los usuarios accedan a la aplicación React
+    networks:
+      - app-network                                           # Red compartida para permitir la comunicación entre el frontend y el backend
+    restart: unless-stopped                                   # Reinicia automáticamente el servicio a menos que se detenga manualmente
+
+networks:
+  app-network:                                                # Define una red personalizada llamada app-network
+    driver: bridge                                            # Usa el driver de red tipo "bridge" para la comunicación interna entre contenedores
+
+volumes:
+  mongodb_data:                                               # Define un volumen nombrado para asegurar la persistencia de los datos de MongoDB
