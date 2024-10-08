@@ -1,4 +1,3 @@
-// data.js
 const sample_users = [
   {
     id: "1",

@@ -1,4 +1,3 @@
-// config/database.config.js
 const mongoose = require('mongoose');
 const Person = require('../models/person.model.js'); // Importa el modelo Person
 const { sample_users } = require('../data.js'); // Importa los datos de muestra
