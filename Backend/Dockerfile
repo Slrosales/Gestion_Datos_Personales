@@ -10,6 +10,9 @@ COPY package*.json ./
 # Instalar las dependencias
 RUN npm install
 
+# Instalar Nodemon globalmente en el contenedor
+RUN npm install -g nodemon
+
 # Copiar el resto de la aplicación al contenedor
 COPY . .
 

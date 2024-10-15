@@ -3,7 +3,7 @@ dotenv.config(); // Carga las variables de entorno desde el archivo .env
 
 const express = require('express');
 const cors = require('cors');
-const personRouter = require('./routers/person.router.js'); // Importa el router de personas
+const personRouter = require('./routes/person.routes.js'); // Importa el router de personas
 const { dbconnect } = require('./config/database.config.js'); // Cambia a require para usar CommonJS
 
 dbconnect(); // Ejecuta la función de conexión a la base de datos
