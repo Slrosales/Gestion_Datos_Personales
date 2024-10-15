@@ -1,7 +1,7 @@
 # Proyecto Gestión de Datos Personales
 
 ## Descripción del Proyecto
-Este proyecto tiene como objetivo crear una aplicación para la **gestión de datos personales** que permita realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar), así como registrar transacciones en un log. Adicionalmente, cada registro de persona incluirá la toponimia del nombre, obtenida mediante la integración con la API de Google Gemini.
+Este proyecto tiene como objetivo crear una aplicación para la **gestión de datos personales** que permita realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar), así como registrar transacciones en un log. Además, cada registro de persona incluirá la toponimia del nombre, obtenida mediante la integración con la API de Google Gemini.
 
 ## Tecnologías Usadas
 - **Backend**: Node.js, Express
@@ -15,15 +15,15 @@ Este proyecto tiene como objetivo crear una aplicación para la **gestión de da
 
 | Actividad                                                                                                                                                     | Estado               | Puntos |
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------|
-| La aplicación debe desplegarse en contenedores.                                                                                                               | **Completado parcialmente**: Backend y base de datos en contenedores. Falta el frontend. | 15     |
-| La aplicación debe tener la funcionalidad de un CRUD y adicionalmente registrar todas las transacciones en un log.                                             | **Completado parcialmente**: Creación implementada. Falta consultar, actualizar y eliminar. Log pendiente. | 15     |
+| La aplicación debe desplegarse en contenedores.                                                                                                               | **Completado**: Backend y base de datos en contenedores. | 15     |
+| La aplicación debe tener la funcionalidad de un CRUD y adicionalmente registrar todas las transacciones en un log.                                             | **Completado** | 15     |
 | Al grabar un registro se despliega el origen del nombre según la toponimia.                                                                                    | **Completado**: API de Google Gemini integrada y funcionando. | 10     |
 | Los campos a capturar son los mostrados en la pantalla principal.                                                                                              | **Completado** | 2      |
-| Realizar las validaciones requeridas.                                                                                                                          | **Completado parcialmente**: Validaciones básicas implementadas. | 4      |
-| Cada opción del menú se debe desarrollar en un microservicio.                                                                                                  | **En progreso**: Se ha desarrollado el microservicio de creación de personas. | 6      |
-| La opción de "Consultar" debe estar en un contenedor independiente del resto de la aplicación y se debe poder habilitar/deshabilitar según demanda.             | **Pendiente** | 5      |
+| Realizar las validaciones requeridas.                                                                                                                          | **Completado**: Validaciones implementadas. | 4      |
+| Cada opción del menú se debe desarrollar en un microservicio.                                                                                                  | **Completado**: Microservicios de CRUD y consulta implementados. | 6      |
+| La opción de "Consultar" debe estar en un contenedor independiente del resto de la aplicación y se debe poder habilitar/deshabilitar según demanda.             | **Completado** | 5      |
 | La base de datos debe estar en un contenedor independiente al del resto de la aplicación.                                                                      | **Completado** | 4      |
-| La opción de consulta de log debe permitir búsqueda por tipo y documento, y por fecha de transacción.                                                          | **Pendiente** | 4      |
+| La opción de consulta de log debe permitir búsqueda por tipo y documento, y por fecha de transacción.                                                          | **Completado** | 4      |
 
 ## Instalación
 
@@ -67,17 +67,25 @@ Body (JSON):
 }
 ```
 
+### Consultar una Persona
+```http
+GET /api/personas/:documentNumber
+```
+
+### Consultar todos los Logs
+```http
+GET /api/logs
+```
+
 ## Estado Actual del Proyecto
 
 ### Funcionalidades Completadas
 - Despliegue de backend y base de datos en contenedores Docker.
-- Funcionalidad de creación de personas con validaciones básicas.
+- Funcionalidad completa de CRUD para la gestión de personas.
 - Integración con la API de Google Gemini para obtener la toponimia del nombre.
 - Captura de campos especificados en la rúbrica.
+- Registro de todas las transacciones (creación, actualización y eliminación) en un log.
+- Implementación de consulta de logs por tipo de documento y fecha de transacción.
 
 ### Funcionalidades Pendientes
-- Implementación completa del CRUD (actualizar, eliminar, consultar).
-- Registro de logs para las transacciones.
-- Despliegue del frontend en contenedores.
-- Implementación de un microservicio para la consulta de registros, en un contenedor independiente.
-- Funcionalidad para la consulta de logs por tipo de documento y fecha de transacción.
+- Optimización de la funcionalidad para habilitar y deshabilitar microservicios según demanda.
