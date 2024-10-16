@@ -95,7 +95,7 @@ Si prefieres verificar los logs directamente en la base de datos MongoDB, sigue 
 
 2. Abre el shell de MongoDB:
    ```bash
-   mongo
+   mongosh
    ```
 
 3. Conéctate a la base de datos `gestion-datos`:
