@@ -3,8 +3,9 @@ dotenv.config(); // Carga las variables de entorno desde el archivo .env
 
 const express = require('express');
 const cors = require('cors');
-const personRouter = require('./routers/person.router.js'); // Importa el router de personas
-const { dbconnect } = require('./config/database.config.js'); // Cambia a require para usar CommonJS
+const personRouter = require('./routes/person.routes.js'); // Importa el router de personas
+const logRouter = require('./routes/log.routes.js');       // Importa el router de logs
+const { dbconnect } = require('./config/database.config.js'); // Función de conexión a la base de datos
 
 dbconnect(); // Ejecuta la función de conexión a la base de datos
 
@@ -19,8 +20,9 @@ app.use(
   })
 );
 
-// Registra personRouter como middleware para manejar las rutas bajo "/api/personas"
-app.use("/api/personas", personRouter);
+// Registra los routers para personas y logs
+app.use("/api/personas", personRouter);  // Rutas para las personas
+app.use("/api/logs", logRouter);         // Rutas para los logs
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
@@ -28,6 +30,5 @@ app.listen(PORT, () => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Bienvenido al servidor de gestión de personas');
+  res.send('Bienvenido al servidor de gestión de datos personales');
 });
-

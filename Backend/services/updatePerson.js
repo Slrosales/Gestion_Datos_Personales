@@ -1,18 +1,38 @@
 const Person = require('../models/person.model');
+const Log = require('../models/log.model');  // Importar el modelo de log
 
 module.exports = async (req, res) => {
   try {
-    // Validar que no se esté tratando de actualizar el número de documento
-    if (req.body.documentNumber) {
-      return res.status(400).json({ error: 'No se puede actualizar el número de documento' });
-    }
+    const validFields = ['firstName', 'secondName', 'lastName', 'birthDate', 'gender', 'email', 'phone', 'documentNumber', 'documentType', 'toponymy'];
+    const updateData = {};
 
-    const person = await Person.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    validFields.forEach(field => {
+      if (req.body[field]) {
+        updateData[field] = req.body[field];
+      }
+    });
+
+    // Actualizar la persona por número de documento
+    const personBeforeUpdate = await Person.findOne({ documentNumber: req.params.documentNumber });
+    const person = await Person.findOneAndUpdate({ documentNumber: req.params.documentNumber }, updateData, { new: true });
+
     if (!person) {
       return res.status(404).json({ error: 'Persona no encontrada' });
     }
-    res.status(200).json({ message: 'Persona actualizada', data: person });
+
+    // Registrar la transacción en el log (incluyendo antes y después de la actualización)
+    await Log.create({
+      action: 'update',
+      documentNumber: req.params.documentNumber,
+      details: {
+        before: personBeforeUpdate,
+        after: person
+      }
+    });
+
+    res.status(200).json({ message: 'Persona actualizada con éxito', data: person });
   } catch (error) {
-    res.status(500).json({ error: error.message || 'Error al actualizar persona' });
+    console.error('Error al actualizar persona:', error);
+    res.status(500).json({ error: 'Error interno al actualizar la persona' });
   }
 };

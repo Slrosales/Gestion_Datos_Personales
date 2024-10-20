@@ -5,7 +5,7 @@ services:
     image: mongo                                              # Imagen de MongoDB oficial
     container_name: mongodb                                   # Nombre del contenedor MongoDB
     ports:
-      - "27017:27017"                                         # Expone el puerto 27017 para acceso externo (para pruebas o conexión directa)
+      - "27017:27017"                                         # Expone el puerto 27017 para acceso externo
     volumes:
       - mongodb_data:/data/db                                 # Volumen nombrado para persistencia de datos en MongoDB
     networks:
@@ -35,6 +35,20 @@ services:
       - "3000:3000"                                           # Expone el puerto 3000 para que los usuarios accedan a la aplicación React
     networks:
       - app-network                                           # Red compartida para permitir la comunicación entre el frontend y el backend
+    restart: unless-stopped                                   # Reinicia automáticamente el servicio a menos que se detenga manualmente
+
+  person-query-service:                                       # Servicio para consultas de personas
+    build: ./person-query-service                             # Usa el Dockerfile en la carpeta person-query-service para construir la imagen
+    container_name: person-query-service                      # Nombre del contenedor para el servicio de consultas
+    ports:
+      - "5001:5001"                                           # Expone el puerto 5001 para el servicio de consultas
+    depends_on:
+      - mongodb                                               # Asegura que MongoDB esté listo antes de iniciar el servicio de consultas
+    networks:
+      - app-network                                           # Red compartida para que el servicio se comunique con MongoDB
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/gestion-datos        # URI para conectar con MongoDB dentro de la red
+      PORT: 5001                                              # Puerto en el que correrá el servicio de consultas
     restart: unless-stopped                                   # Reinicia automáticamente el servicio a menos que se detenga manualmente
 
 networks:

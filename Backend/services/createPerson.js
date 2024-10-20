@@ -1,5 +1,6 @@
 const Person = require('../models/person.model');
 const getToponymy = require('./toponymyService');
+const Log = require('../models/log.model');  // Importar el modelo de log
 
 module.exports = async (req, res) => {
   try {
@@ -15,10 +16,18 @@ module.exports = async (req, res) => {
     const toponymy = await getToponymy(person.firstName);
 
     // Actualizar el campo toponymy con el resultado obtenido
-    person.toponymy = toponymy.slice(0, 1000); // Limitar la toponimia a 300 caracteres
+    person.toponymy = toponymy.slice(0, 1000); // Limitar la toponimia a 1000 caracteres
 
     // Guardar la persona nuevamente con la toponimia actualizada
     await person.save();
+
+    // Registrar la transacción en el log
+    await Log.create({
+      action: 'create',
+      documentNumber: person.documentNumber,
+      details: person,  // Guardar todos los detalles de la persona
+      timestamp: new Date()  // Registrar la fecha y hora de la transacción
+    });
 
     // Incluir la toponimia en la respuesta
     res.status(201).json({

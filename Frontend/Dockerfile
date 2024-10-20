@@ -4,15 +4,18 @@ FROM node:18
 # Establecer directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copiar los archivos de package.json y package-lock.json primero
-COPY package*.json ./
+# Copiar los archivos de package.json y package-lock.json desde la carpeta pf_app
+COPY pf_app/package*.json ./pf_app/
+
+WORKDIR /app/pf_app
 
 # Instalar las dependencias
 RUN npm install
 
 # Copiar el resto de la aplicación al contenedor
-COPY . .
+COPY pf_app .
 
+# Construir la aplicación para producción
 RUN npm run build
 
 # Exponer el puerto 3000 para que la aplicación esté disponible

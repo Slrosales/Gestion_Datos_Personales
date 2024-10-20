@@ -1,6 +1,9 @@
 # Dockerfile para el Backend (API Gateway)
 FROM node:18
 
+RUN apt-get update && \
+    apt-get install -y curl gnupg lsb-release
+
 # Establecer directorio de trabajo en el contenedor
 WORKDIR /app
 
@@ -9,6 +12,9 @@ COPY package*.json ./
 
 # Instalar las dependencias
 RUN npm install
+
+# Instalar Nodemon globalmente en el contenedor
+RUN npm install -g nodemon
 
 # Copiar el resto de la aplicación al contenedor
 COPY . .
