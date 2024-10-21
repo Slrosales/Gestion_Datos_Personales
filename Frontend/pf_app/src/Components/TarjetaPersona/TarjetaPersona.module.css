@@ -1,0 +1,68 @@
+.tarjetaConPiernas {
+    @apply mb-16;
+    position: relative; /* Este es el contenedor principal que posiciona las piernas y la tarjeta */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tarjeta {
+    @apply rounded-md border-gray-900 border-2 bg-white shadow-lg;
+    width: 200px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1; /* La tarjeta tiene mayor prioridad en el apilamiento */
+    position: relative; /* Esto es importante para que las piernas no la afecten */
+  }
+  
+  .contenido {
+    text-align: center;
+  }
+  
+  .legs {
+    display: flex;
+    justify-content: space-between;
+    width: 40px;
+    position: absolute; /* Las piernas se colocan de manera absoluta */
+    bottom: -30px; /* Las ponemos debajo de la tarjeta */
+    z-index: 0; /* Se aseguran de estar detrás de la tarjeta */
+  }
+  
+  .leg {
+    width: 10px;
+    height: 40px;
+    background-color: black;
+    border-radius: 5px;
+  }
+  
+  /* Posicionamos los ojos */
+  .ojos {
+    display: flex;
+    justify-content: space-between;
+    width: 100px; /* Espacio para los dos ojos */
+    position: absolute;
+    top: -35px; /* Los posicionamos encima de la tarjeta */
+    z-index: 2; /* Los ojos estarán encima de la tarjeta */
+  }
+  
+  .ojo {
+    width: 35px; /* Tamaño de los ojos */
+    height: 35px;
+  }
+  
+
+  .boton_detalles {
+    @apply bg-green-500 text-white font-bold py-2 px-3 rounded-full mt-2;
+  }
+  .boton_detalles:hover {
+    @apply bg-green-700;
+  }
+  .boton_eliminar {
+    @apply bg-rose-500 text-white font-bold py-2 px-3 rounded-full mt-2;
+  }
+    .boton_eliminar:hover {
+        @apply bg-rose-700;
+    }

@@ -4,6 +4,19 @@ const Log = require('../models/log.model');  // Importar el modelo de log
 
 module.exports = async (req, res) => {
   try {
+    const { email, documentNumber } = req.body;
+
+    // Verificar si ya existe una persona con el mismo email o número de documento
+    const existingPerson = await Person.findOne({
+      $or: [{ email }, { documentNumber }]
+    });
+
+    if (existingPerson) {
+      return res.status(400).json({
+        message: 'El correo electrónico o el número de documento ya están registrados. Por favor, valida la información.',
+      });
+    }
+
     const person = new Person(req.body);
 
     // Validar los datos antes de guardar

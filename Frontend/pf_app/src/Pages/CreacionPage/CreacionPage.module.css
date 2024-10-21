@@ -1,0 +1,125 @@
+.formContainer {
+
+    @apply flex flex-col items-center justify-center py-10 border-2 m-auto border-zinc-950 rounded-lg shadow-lg bg-white; 
+    
+    margin-top: 5rem;
+    width: 60%;
+  
+}
+.titulo {
+    @apply  m-auto  mt-20 mb-20 flex items-center justify-center;
+    width: 30vw;
+    height: 8vw;
+}
+
+.titulo h1 {
+    @apply text-7xl font-bold  text-green-500 text-center ;
+
+}
+.tituloform{
+    @apply text-3xl font-bold  text-green-500 text-center mb-8;
+}
+.nombre {
+    @apply   flex flex-row items-center justify-center mb-8;
+
+    
+}
+
+.nombre input {
+    @apply  mx-2 border-2 border-zinc-950 rounded-lg;
+}
+.fecha_genero {
+    @apply   flex flex-row items-center justify-center  mb-8;
+
+    
+}
+
+.fecha_genero input {
+    @apply  mx-2 border-2 border-zinc-950 rounded-lg;
+}
+.fecha_genero select {
+    @apply  mx-2 border-2 border-zinc-950 rounded-lg;
+}
+
+.correo_telefono {
+    @apply   flex flex-row items-center justify-center mb-8;
+
+    
+}
+
+.correo_telefono input {
+    @apply  mx-2 border-2 border-zinc-950 rounded-lg;
+}
+
+.tip_doc {
+    @apply   flex flex-row items-center justify-center mb-8;
+
+    
+}
+
+.tip_doc input {
+    @apply  mx-2 border-2 border-zinc-950 rounded-lg;
+}
+
+.tip_doc select {
+    @apply  mx-2 border-2 border-zinc-950 rounded-lg;
+}
+
+.boton_enviar {
+    @apply   flex flex-row items-center justify-center mb-8;
+
+    
+}
+
+.boton_enviar button {
+    @apply  mx-2 rounded-lg bg-green-500 text-white px-4 py-2;
+}
+.contenedor_boton_volver{
+    @apply  m-auto mt-14 flex items-center justify-center;
+    width: 30vw;
+
+  }
+  .boton_volver{
+    @apply bg-rose-500 text-white font-bold py-2 px-3 rounded-full m-auto;
+  }
+  /* Estilos básicos para el modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    @apply  bg-white shadow-lg rounded-lg text-justify text-balance ;
+    
+    overflow-y: auto ;
+    padding: 20px;
+    width: 50%;
+
+    text-align: center;
+  
+  }
+  .modalContent h1 {
+    @apply text-3xl font-bold  text-green-500 text-center mb-8;
+  }
+  .modalContent button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .modalContent button:hover {
+    background-color: #0056b3;
+  }
+  

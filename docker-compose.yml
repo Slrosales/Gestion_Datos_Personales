@@ -47,6 +47,7 @@ services:
     networks:
       - app-network                                           # Red compartida para que el servicio se comunique con MongoDB
     environment:
+      IS_DOCKER: true                                         # Establece la variable IS_DOCKER a true para indicar que se está ejecutando en Docker
       MONGO_URI: mongodb://mongodb:27017/gestion-datos        # URI para conectar con MongoDB dentro de la red
       PORT: 5001                                              # Puerto en el que correrá el servicio de consultas
     restart: unless-stopped                                   # Reinicia automáticamente el servicio a menos que se detenga manualmente

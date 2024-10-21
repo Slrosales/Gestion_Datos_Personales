@@ -1,0 +1,38 @@
+
+  
+  #tsparticles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Fondo detrás del contenido */
+  }
+  
+  h1, .tarjetas {
+    position: relative;
+    z-index: 1; /* Aseguramos que el contenido esté encima */
+  }
+  .tarjetas{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  .titulo_div{
+    @apply  m-auto  mt-20 mb-32 flex items-center justify-center;
+    width: 30vw;
+    height: 8vw;
+ 
+  }
+  .titulo{
+    @apply text-7xl font-bold  text-rose-500 text-center ;
+
+  }
+  .contenedor_boton_volver{
+    @apply  m-auto mt-24 flex items-center justify-center;
+    width: 30vw;
+
+  }
+  .boton_volver{
+    @apply bg-rose-500 text-white font-bold py-2 px-3 rounded-full m-auto;
+  }
