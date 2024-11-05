@@ -1,0 +1,13 @@
+.contenedorb{
+
+    @apply flex flex-row mx-auto my-20 mt-0 p-2 xl:w-1/5 max-lg:mt-7 ; 
+}
+.contenedor_input_b{
+    @apply  mx-auto; 
+}
+.buscador{
+    @apply rounded-md rounded-r-none border border-gray-300 bg-white text-base py-4; 
+}
+.boton_buscar{
+    @apply bg-blue-500 hover:bg-blue-700 border border-gray-300 text-white font-bold py-4 px-4 rounded-md  rounded-l-none; 
+}

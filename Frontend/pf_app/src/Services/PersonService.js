@@ -5,7 +5,7 @@ export const getAll = async () => {
         const response = await apiConsultas.get('/api/person-query/all');
         return response;  // Retorna todo el objeto de respuesta
     } catch (error) {
-        console.error("Error al consultar API:", error);
+       
         return { data: [] };  // Retorna un objeto vacío en caso de error
     }
 };
@@ -37,7 +37,7 @@ export const getByDocument = async (documentNumber) => {
         const response = await apiCrear.get(`/api/personas/${documentNumber}`);
         return response;  // Retorna todo el objeto de respuesta
     } catch (error) {
-        console.error("Error al consultar API:", error);
+        
         return { data: [] };  // Retorna un objeto vacío en caso de error
     }
 };
