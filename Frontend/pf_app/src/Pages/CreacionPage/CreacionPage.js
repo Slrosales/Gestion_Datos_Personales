@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import classes from './CreacionPage.module.css';
-import { create, getByDocument } from '../../Services/PersonService'; // Asumo que getByEmail también existe
+import { create, getByDocument } from '../../Services/PersonService'; 
 
 export default function CreacionPage() {
-  // Estado para almacenar los valores del formulario
   const [formValues, setFormValues] = useState({
     firstName: '',
     secondName: '',
@@ -16,161 +15,109 @@ export default function CreacionPage() {
     documentType: '',
   });
 
-  // Estado para controlar la visibilidad del modal
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');  // Para el mensaje del modal
-  const [titletTopo, setTitleToponymy] = useState(false);  // Para la toponimia
+  const [modalMessage, setModalMessage] = useState('');  
+  const [titletTopo, setTitleToponymy] = useState(false);
 
-  // Función para manejar los cambios en el formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({
       ...formValues,
       [name]: value,
     });
+    setErrors({ ...errors, [name]: '' });
   };
 
-  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = {};
 
-        // Validaciones básicas del formulario
     if (!/^\d+$/.test(formValues.documentNumber) || formValues.documentNumber.length > 10) {
-       setModalMessage("El número de documento debe ser un número de hasta 10 caracteres.");
-       setIsModalOpen(true); 
-       setTitleToponymy(false);
-      return;
+      newErrors.documentNumber = "El número de documento debe ser un número de hasta 10 caracteres.";
     }
 
     if (!/^[a-zA-Z]+$/.test(formValues.firstName) || formValues.firstName.length > 30) {
-     setModalMessage("El primer nombre no debe contener números y debe tener un máximo de 30 caracteres.");
-     setIsModalOpen(true); 
-     setTitleToponymy(false);
-
-      return;
+      newErrors.firstName = "El primer nombre no debe contener números y debe tener un máximo de 30 caracteres.";
     }
 
     if (formValues.secondName && (!/^[a-zA-Z]+$/.test(formValues.secondName) || formValues.secondName.length > 30)) {
-     setModalMessage("El segundo nombre no debe contener números y debe tener un máximo de 30 caracteres.");
-     setIsModalOpen(true); 
-     setTitleToponymy(false);
-
-      return;
+      newErrors.secondName = "El segundo nombre no debe contener números y debe tener un máximo de 30 caracteres.";
     }
 
     if (!/^[a-zA-Z]+$/.test(formValues.lastName) || formValues.lastName.length > 60) {
-       setModalMessage("El apellido no debe contener números y debe tener un máximo de 60 caracteres.");
-       setIsModalOpen(true); 
-       setTitleToponymy(false);
-
-      return;
+      newErrors.lastName = "El apellido no debe contener números y debe tener un máximo de 60 caracteres.";
     }
 
-    // Validar que la fecha de nacimiento esté en formato yyyy-mm-dd y que sea una fecha válida
     if (!/^\d{4}-\d{2}-\d{2}$/.test(formValues.birthDate)) {
-       setModalMessage("La fecha de nacimiento debe tener el formato yyyy-mm-dd.");
-       setIsModalOpen(true); 
-       setTitleToponymy(false);
-
-      return;
+      newErrors.birthDate = "La fecha de nacimiento debe tener el formato yyyy-mm-dd.";
     } else {
       const birthDate = new Date(formValues.birthDate);
       const today = new Date();
       if (isNaN(birthDate.getTime()) || birthDate > today) {
-        setModalMessage("La fecha de nacimiento debe ser una fecha válida y no puede ser en el futuro.");
-        setIsModalOpen(true); 
-        setTitleToponymy(false);
-
-        return;
+        newErrors.birthDate = "La fecha de nacimiento debe ser válida y no puede ser en el futuro.";
       }
     }
 
     const validGenders = ['Masculino', 'Femenino', 'No binario', 'Prefiero no reportar'];
     if (!validGenders.includes(formValues.gender)) {
-       setModalMessage("El género debe ser una de las siguientes opciones: Masculino, Femenino, No binario, Prefiero no reportar.");
-       setIsModalOpen(true); 
-       setTitleToponymy(false);
-
-      return;
+      newErrors.gender = "El género debe ser una opción válida.";
     }
 
-    // Validar email con un regex básico (ya que el schema lo pide)
     if (!/.+@.+\..+/.test(formValues.email)) {
-      setModalMessage("Debe ingresar un correo electrónico válido.");
-      setIsModalOpen(true); 
-      setTitleToponymy(false);
-
-      return;
+      newErrors.email = "Debe ingresar un correo electrónico válido.";
     }
 
-    // Validar que el teléfono tenga exactamente 10 caracteres y sea numérico
     if (!/^\d{10}$/.test(formValues.phone)) {
-      setModalMessage("El teléfono debe ser un número de exactamente 10 caracteres.");
-      setIsModalOpen(true); 
-      setTitleToponymy(false);
-
-      return;
+      newErrors.phone = "El teléfono debe ser un número de exactamente 10 caracteres.";
     }
 
     const validDocumentTypes = ['Cédula', 'Tarjeta de identidad'];
     if (!validDocumentTypes.includes(formValues.documentType)) {
-      setModalMessage("El tipo de documento debe ser 'Cédula' o 'Tarjeta de identidad'.");
-      setIsModalOpen(true); 
-      setTitleToponymy(false);
+      newErrors.documentType = "El tipo de documento debe ser 'Cédula' o 'Tarjeta de identidad'.";
+    }
 
-
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
-    try {
-      // Si no se encuentra ninguna coincidencia, procedemos a crear la persona
-      const response = await create(formValues);
-      console.log('Respuesta de creación:', response);
-      
-      // Verificar si hubo un error de validación en la creación
-      if (!response.success) {
-          if (response.status === 400) {
-             
-              setModalMessage(response.message); // Mostrar el mensaje de error
-              setIsModalOpen(true); // Abrir modal para mostrar el error
-              setTitleToponymy(false);
+    setIsLoading(true);
 
-          } 
-         
-          return; 
+    try {
+      const response = await create(formValues);
+
+      if (!response.success) {
+        setModalMessage(response.message || "Ocurrió un error en la creación."); 
+        setIsModalOpen(true); 
+        setTitleToponymy(false);
+        return;
       }
-  
-      console.log('Persona creada:', response);
-      if(response.status === 201) {
-       console.log('Persona creada:', response.data);
-     
-      const newPersonData = await getByDocument(formValues.documentNumber);
-      const formatTextWithBold = (text) => {
-       
-        return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      };
       
-  
-      const ModalContent = () => {
-        return (
+      if(response.status === 201) {
+        const newPersonData = await getByDocument(formValues.documentNumber);
+        const formatTextWithBold = (text) => text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        const ModalContent = () => (
           <div dangerouslySetInnerHTML={{ __html: formatTextWithBold(newPersonData.data.data.toponymy) }} />
         );
-      };
-      
-    
-      setModalMessage(<ModalContent />);
-      setIsModalOpen(true); 
-      setTitleToponymy(true);
+
+        setModalMessage(<ModalContent />);
+        setIsModalOpen(true); 
+        setTitleToponymy(true);
       }
-  
-  } catch (error) {
+
+    } catch (error) {
       console.error("Error al crear persona:", error);
-  }
-  
-    
+      setModalMessage("Hubo un problema con el servidor. Inténtalo de nuevo más tarde.");
+      setIsModalOpen(true); 
+      setTitleToponymy(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Función para cerrar el modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -199,6 +146,7 @@ export default function CreacionPage() {
                 maxLength="30"
                 required
               />
+              {errors.firstName && <p className={classes.error}>{errors.firstName}</p>}
             </div>
             <div>
               Segundo Nombre:
@@ -209,6 +157,7 @@ export default function CreacionPage() {
                 onChange={handleInputChange}
                 maxLength="30"
               />
+              {errors.secondName && <p className={classes.error}>{errors.secondName}</p>}
             </div>
             <div>
               Apellido:
@@ -220,6 +169,7 @@ export default function CreacionPage() {
                 maxLength="60"
                 required
               />
+              {errors.lastName && <p className={classes.error}>{errors.lastName}</p>}
             </div>
           </div>
           <div className={classes.fecha_genero}>
@@ -232,6 +182,7 @@ export default function CreacionPage() {
                 onChange={handleInputChange}
                 required
               />
+              {errors.birthDate && <p className={classes.error}>{errors.birthDate}</p>}
             </div>
             <div>
               Género:
@@ -247,9 +198,10 @@ export default function CreacionPage() {
                 <option value="No binario">No Binario</option>
                 <option value="Prefiero no reportar">Prefiero no reportar</option>
               </select>
+              {errors.gender && <p className={classes.error}>{errors.gender}</p>}
             </div>
-          </div >
-          <div className={classes.correo_telefono} >
+          </div>
+          <div className={classes.correo_telefono}>
             <div>
               Correo Electrónico:
               <input
@@ -259,6 +211,7 @@ export default function CreacionPage() {
                 onChange={handleInputChange}
                 required
               />
+              {errors.email && <p className={classes.error}>{errors.email}</p>}
             </div>
             <div>
               Teléfono:
@@ -270,9 +223,10 @@ export default function CreacionPage() {
                 maxLength="10"
                 required
               />
+              {errors.phone && <p className={classes.error}>{errors.phone}</p>}
             </div>
           </div>
-          <div className={classes.tip_doc} >
+          <div className={classes.tip_doc}>
             <div>
               Tipo de Documento:
               <select
@@ -285,6 +239,7 @@ export default function CreacionPage() {
                 <option value="Tarjeta de identidad">Tarjeta de identidad</option>
                 <option value="Cédula">Cédula</option>
               </select>
+              {errors.documentType && <p className={classes.error}>{errors.documentType}</p>}
             </div>
             <div>
               Número de Documento:
@@ -296,20 +251,21 @@ export default function CreacionPage() {
                 maxLength="10"
                 required
               />
+              {errors.documentNumber && <p className={classes.error}>{errors.documentNumber}</p>}
             </div>
           </div>
           <div className={classes.boton_enviar}>
-            <button type="submit">Crear Persona</button>
+            <button type="submit" disabled={isLoading}>
+              {isLoading ? "Creando..." : "Crear Persona"}
+            </button>
           </div>
         </form>
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className={classes.modal}>
           <div className={classes.modalContent}>
-           {titletTopo ? <h1> Origen Toponimico </h1> : <h1>  </h1>}
-             
+            {titletTopo ? <h1> Origen Toponímico </h1> : null}
             <p>{modalMessage}</p> 
             <button onClick={handleCloseModal}>Cerrar</button>
           </div>

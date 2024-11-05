@@ -96,18 +96,16 @@
   @apply text-3xl font-bold  text-green-500 text-center mb-8;
 }
 .modalContent button {
-  margin-top: 20px;
+
   padding: 10px 20px;
-  background-color: #007bff;
+  
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.modalContent button:hover {
-  background-color: #0056b3;
-}
+
 .tituloModal{
   @apply text-3xl font-bold  text-green-500 text-center mb-8;
 }
@@ -125,7 +123,7 @@
  
 }
 .parrafo{
-  @apply text-justify;
+  @apply text-justify px-2;
    /* tamaño vertical con scroll */
    height: 170px;
    overflow-y: scroll;
@@ -139,4 +137,20 @@
 }
 .colori{
   @apply  font-bold  max-xl:text-xs;
+}
+
+.botones{
+  @apply flex justify-center w-1/4 mx-auto mt-8 ;
+}
+.boton_c{
+  @apply bg-green-500 text-white font-bold  mx-2 rounded-full mt-2;
+}
+.boton_c:hover {
+  @apply bg-green-700;
+}
+.boton_g {
+  @apply bg-rose-500 text-white font-bold  mx-2 rounded-full mt-2;
+}
+.boton_g:hover {
+  @apply bg-rose-700;
 }

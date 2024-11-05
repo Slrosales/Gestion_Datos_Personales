@@ -1,38 +1,80 @@
-
-
-.contenedorP{
+.contenedorP {
     @apply flex;
 
     /*Cubrir todo*/
     height: 100vh;
     width: 100vw;
- 
 }
-.contenido{
-    @apply flex items-center justify-center bg-slate-50 shadow-lg  m-auto rounded-lg  ;
+
+.titulo {
+    @apply text-7xl font-bold text-center mb-8;
+}
+
+/* Responsividad de la sección de contenido */
+.contenido {
+    @apply flex flex-col items-center justify-center bg-slate-50 shadow-lg m-auto rounded-lg;
     height: 50vh;
     width: 50vw;
 }
 
-.contenido ul{
-    @apply flex flex-row  items-center ;
+/* Ajuste para pantallas móviles */
+@media (max-width: 768px) {
+    .titulo {
+        @apply text-4xl; /* Reducir el tamaño del texto del título en móviles */
+    }
 
+    .contenido {
+        height: auto; /* Ajuste automático de altura */
+        width: 90vw; /* Más ancho en móviles */
+        padding: 1rem; /* Añadir un poco de espacio interno */
+    }
+
+    .contenido ul {
+        @apply flex-col; /* Cambiar a columna en móviles */
+    }
+
+    .contenido ul li {
+        @apply mb-4; /* Espacio inferior entre los botones en móviles */
+    }
 }
 
-.contenido ul li{
-    @apply mx-4 ;
+/* Ajuste para tabletas */
+@media (max-width: 1024px) {
+    .titulo {
+        @apply text-5xl; /* Ajustar el tamaño del título en tabletas */
+    }
+
+    .contenido {
+        height: auto;
+        width: 70vw; /* Más ancho en tabletas */
+        padding: 1rem;
+    }
+
+    .contenido ul li {
+        @apply mx-2; /* Espacio reducido entre botones */
+    }
 }
 
-.boton_consulta{
+.contenido ul {
+    @apply flex flex-row items-center;
+}
+
+.contenido ul li {
+    @apply mx-4;
+}
+
+.boton_consulta {
     @apply bg-rose-500 text-white font-bold py-2 px-4 rounded-lg;
 }
-.boton_consulta:hover{
+
+.boton_consulta:hover {
     @apply bg-rose-700;
 }
 
-.boton_creacion{
+.boton_creacion {
     @apply bg-teal-500 text-white font-bold py-2 px-4 rounded-lg;
 }
-.boton_creacion:hover{
+
+.boton_creacion:hover {
     @apply bg-teal-700;
 }
