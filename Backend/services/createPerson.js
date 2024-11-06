@@ -19,8 +19,13 @@ module.exports = async (req, res) => {
 
     const person = new Person(req.body);
 
+    if(req.file) {
+      person.profilePicture = req.file.filename;
+    }
+
     // Validar los datos antes de guardar
     await person.validate();
+
 
     // Guardar la persona en la base de datos
     await person.save();

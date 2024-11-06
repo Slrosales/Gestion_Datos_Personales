@@ -9,7 +9,7 @@ async function getToponymy(name) {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt =
-        `Proporciona el origen del nombre "${name}" según la toponimia.`;
+        `Proporciona el origen del nombre "${name}" según la toponimia en maximo 1000 caracteres.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;

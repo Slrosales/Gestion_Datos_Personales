@@ -11,6 +11,7 @@ const PersonSchema = new mongoose.Schema({
   documentNumber: { type: String, required: true, maxlength: 10, unique: true }, // Llave única
   documentType: { type: String, enum: ['Cédula', 'Tarjeta de identidad'], required: true },
   toponymy: { type: String, maxlength: 1000 },
+  profilePicture: { type: String, maxlength: 500, require: true }, // Campo para la URL de la foto de perfil
 });
 
 // Exportar el modelo de persona

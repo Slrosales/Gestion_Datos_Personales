@@ -13,6 +13,8 @@ const app = express(); // Crea una instancia de una aplicación Express
 
 app.use(express.json()); // Habilita el middleware para parsear JSON, permitiendo que la app maneje solicitudes JSON
 
+app.use('/uploads', express.static('uploads'));
+
 app.use(
   cors({
     credentials: true,
