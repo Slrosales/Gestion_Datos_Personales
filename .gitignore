@@ -1,3 +1,5 @@
 /Frontend/pf_app/node_modules
 /Backend/node_modules
 /person-query-service/node_modules
+__azurite_db_blob__.json
+__azurite_db_blob__extent.json
