@@ -36,6 +36,9 @@ services:
     networks:
       - app-network                                           # Red compartida para permitir la comunicación entre el frontend y el backend
     restart: unless-stopped                                   # Reinicia automáticamente el servicio a menos que se detenga manualmente
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:5000/
+   
 
   person-query-service:                                       # Servicio para consultas de personas
     build: ./person-query-service                             # Usa el Dockerfile en la carpeta person-query-service para construir la imagen

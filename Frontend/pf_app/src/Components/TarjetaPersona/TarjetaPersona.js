@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import classes from './TarjetaPersona.module.css';
-import { deleteByDocument, updateByDocument } from '../../Services/PersonService';
+import { deleteByDocument, updateByDocument, update_img } from '../../Services/PersonService';
 
 function TarjetaPersona({ Persona, onDelete }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -9,6 +9,17 @@ function TarjetaPersona({ Persona, onDelete }) {
   const [updatedPersona, setUpdatedPersona] = useState({ ...Persona });
   const [errors, setErrors] = useState({});
   const birthDateRef = useRef(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageTimestamp, setImageTimestamp] = useState(Date.now());
+
+  // useEffect para actualizar el timestamp cuando se cambia la imagen de perfil
+  useEffect(() => {
+    if (updatedPersona.profilePicture) {
+      console.log("Imagen actualizada:", updatedPersona.profilePicture);
+      setImageTimestamp(Date.now()); // Actualiza el timestamp para forzar la recarga de la imagen
+    }
+  }, [updatedPersona.profilePicture]);
 
   // Manejo de modales
   const handleOpenModal = () => setIsModalOpen(true);
@@ -24,8 +35,7 @@ function TarjetaPersona({ Persona, onDelete }) {
       if (onDelete) onDelete(Persona.documentNumber);
     }
   };
-//Arreglo de texto
- const formatTextWithBold = (text) => text.replace(/\*\s*(.*?)\s*\*/g, '<strong>$1</strong>');
+
   // Formateo de fecha
   const formatBirthDate = (dateString) => {
     const date = new Date(dateString);
@@ -69,6 +79,21 @@ function TarjetaPersona({ Persona, onDelete }) {
     setUpdatedPersona((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  // Manejo de la actualización de imagen
+  const handleImageUpdate = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size > 2 * 1024 * 1024) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        profilePicture: 'La imagen no debe superar los 2 MB.'
+      }));
+      setSelectedImage(null);
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, profilePicture: '' }));
+      setSelectedImage(file);
+    }
+  };
+
   // Actualizar Persona y reflejar los cambios en tiempo real
   const handleUpdate = async () => {
     const hasErrors = Object.values(errors).some((error) => error);
@@ -76,12 +101,39 @@ function TarjetaPersona({ Persona, onDelete }) {
       console.error("Hay errores en el formulario");
       return;
     }
+
+    // Si hay una imagen seleccionada, crea FormData y pasa la imagen a update_img
+    if (selectedImage) {
+      const formData = new FormData();
+      formData.append('profilePicture', selectedImage);
+
+      const imageResponse = await update_img(Persona.documentNumber, formData);
+      if (imageResponse.success) {
+        console.log('Imagen actualizada con éxito:', imageResponse.data.updatedProfilePicture);
+
+        // Actualizar el estado `updatedPersona` con la nueva imagen
+        setUpdatedPersona((prev) => ({
+          ...prev,
+          profilePicture: imageResponse.data.updatedProfilePicture,
+        }));
+
+        //recargar la pagina 
+        window.location.reload();
+
+        setSelectedImage(null);
+      } else {
+        console.error('Error al actualizar la imagen:', imageResponse.message);
+        return;
+      }
+    }
+
+    // Actualizar otros campos de la persona
     const response = await updateByDocument(Persona.documentNumber, updatedPersona);
     if (response.success) {
       console.log('Persona actualizada con éxito');
-      Object.assign(Persona, updatedPersona); // Reflejar cambios en el objeto Persona original
-      setIsModalOpen(true); // Actualiza el modal de detalles para reflejar los cambios
-      setIsUpdateModalOpen(false); // Cierra el modal de actualización
+      Object.assign(Persona, updatedPersona);
+      setIsModalOpen(true);
+      setIsUpdateModalOpen(false);
     } else {
       console.error('Error al actualizar:', response.message);
     }
@@ -89,55 +141,17 @@ function TarjetaPersona({ Persona, onDelete }) {
 
   return (
     <div className={classes.tarjetaConPiernas}>
-      {/* Ojos encima de la tarjeta */}
-      <motion.div
-        className={classes.ojos}
-        initial={{ y: 0 }}
-        animate={{ y: [0, -2, 0] }}
-        transition={{
-          duration: 1,
-          repeat: Infinity,
-          repeatType: 'loop',
-        }}
-      >
+      {/* Animaciones de ojos y piernas */}
+      <motion.div className={classes.ojos} initial={{ y: 0 }} animate={{ y: [0, -2, 0] }} transition={{ duration: 1, repeat: Infinity, repeatType: 'loop' }}>
         <img src="https://iili.io/236ch2s.png" alt="Ojo izquierdo" className={classes.ojo} />
         <img src="https://iili.io/236ch2s.png" alt="Ojo derecho" className={classes.ojo} />
       </motion.div>
-
-      {/* Sección de las piernas */}
       <div className={classes.legs}>
-        <motion.div
-          className={classes.leg}
-          initial={{ rotate: 0 }}
-          animate={{ y: [0, 0, 2] }}
-          transition={{
-            duration: 0.5,
-            repeat: Infinity,
-            repeatType: 'mirror',
-          }}
-        />
-        <motion.div
-          className={classes.leg}
-          initial={{ rotate: 0 }}
-          animate={{ y: [2, 0, 0] }}
-          transition={{
-            duration: 0.5,
-            repeat: Infinity,
-            repeatType: 'mirror',
-          }}
-        />
+        <motion.div className={classes.leg} initial={{ rotate: 0 }} animate={{ y: [0, 0, 2] }} transition={{ duration: 0.5, repeat: Infinity, repeatType: 'mirror' }} />
+        <motion.div className={classes.leg} initial={{ rotate: 0 }} animate={{ y: [2, 0, 0] }} transition={{ duration: 0.5, repeat: Infinity, repeatType: 'mirror' }} />
       </div>
 
-      <motion.div
-        className={classes.tarjeta}
-        initial={{ y: 0 }}
-        animate={{ y: [0, -2, 0] }}
-        transition={{
-          duration: 1,
-          repeat: Infinity,
-          repeatType: 'loop',
-        }}
-      >
+      <motion.div className={classes.tarjeta} initial={{ y: 0 }} animate={{ y: [0, -2, 0] }} transition={{ duration: 1, repeat: Infinity, repeatType: 'loop' }}>
         <div className={classes.contenido}>
           <div className={classes.nombre}>
             <h2>{updatedPersona.firstName} {updatedPersona.lastName}</h2>
@@ -158,6 +172,13 @@ function TarjetaPersona({ Persona, onDelete }) {
             <h2 className={classes.tituloModal}>Detalles de la persona</h2>
             <div className={classes.principal}>
               <div className={classes.detalles}>
+                <img 
+                  src={updatedPersona.profilePicture 
+                    ? `http://localhost:5000/uploads/${updatedPersona.profilePicture}?t=${imageTimestamp}`
+                    : "ruta/de/imagen/predeterminada.jpg"} // Imagen predeterminada si `profilePicture` es undefined
+                  alt="Foto de la persona" 
+                  className={classes.profilePicture} 
+                />
                 <p><span className={classes.color}>Nombre:</span> {updatedPersona.firstName}</p>
                 {updatedPersona.secondName && <p><span className={classes.color}>Segundo nombre:</span> {updatedPersona.secondName}</p>}
                 <p><span className={classes.color}>Apellido:</span> {updatedPersona.lastName}</p>
@@ -174,10 +195,6 @@ function TarjetaPersona({ Persona, onDelete }) {
                 <p><span className={classes.color}>Email:</span> {updatedPersona.email}</p>
                 <p><span className={classes.color}>Género:</span> {updatedPersona.gender}</p>
               </div>
-	    <div className={classes.toponimia}>
-              <h2><span className={classes.color}>Toponimia: </span></h2>
-              <p className={classes.parrafo} dangerouslySetInnerHTML={{ __html: ` ${formatTextWithBold(Persona.toponymy)}` }}></p>
-            </div>
             </div>
             <div className={classes.botones}>
               <button className={classes.boton_g} onClick={handleCloseModal}>Cerrar</button>
@@ -248,6 +265,27 @@ function TarjetaPersona({ Persona, onDelete }) {
                 />
                 {errors.phone && <p className={classes.error}>{errors.phone}</p>}
               </div>
+            </div>
+            <p className={classes.tituloI}>Imagen de Perfil (máx. 2 MB):</p>
+            <div
+              className={`${classes.imageUpload} ${isDragOver ? classes.dragOver : ''}`}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={handleImageUpdate}
+            >
+              <label htmlFor="profilePicture" className={classes.uploadButton}>
+                {selectedImage ? selectedImage.name : 'Seleccionar Imagen'}
+              </label>
+              <input
+                id="profilePicture"
+                type="file"
+                name="profilePicture"
+                accept="image/*"
+                onChange={handleImageUpdate}
+                className="hidden"
+              />
+              {errors.profilePicture && (
+                <p className={classes.error}>{errors.profilePicture}</p>
+              )}
             </div>
             <div className={classes.botones}>
               <button className={classes.boton_g} onClick={handleUpdate}>Guardar Cambios</button>

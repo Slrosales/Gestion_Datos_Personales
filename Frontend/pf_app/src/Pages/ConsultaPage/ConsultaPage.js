@@ -44,6 +44,7 @@ export default function ConsultaPage() {
     const fetchData = async () => {
       try {
         const result = await getAll();
+        console.log(result.data.data);
         setPersona(result.data.data);
       } catch (error) {
         console.error("Error al obtener los datos:", error);

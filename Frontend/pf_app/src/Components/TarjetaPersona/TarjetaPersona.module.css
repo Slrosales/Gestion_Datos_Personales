@@ -154,3 +154,26 @@
 .boton_g:hover {
   @apply bg-rose-700;
 }
+.profilePicture{
+  @apply w-28 h-28 rounded-full mx-auto;
+}
+.tituloI{
+  @apply  text-center mb-8;
+}
+.imageUpload {
+  @apply flex flex-col items-center justify-center w-full max-w-md mx-auto mb-8 p-6 border-2 border-dashed rounded-lg transition-all duration-300;
+  @apply bg-gray-50 hover:bg-gray-100 cursor-pointer;
+}
+
+.uploadButton {
+  @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-md;
+  @apply hover:bg-blue-600 transition-colors duration-200 cursor-pointer;
+}
+
+.imageUpload.dragOver {
+  @apply border-blue-500 bg-blue-50;
+}
+
+.error {
+  @apply text-red-500 text-sm mt-2;
+}

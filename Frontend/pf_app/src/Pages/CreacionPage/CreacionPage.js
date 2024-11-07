@@ -13,13 +13,15 @@ export default function CreacionPage() {
     phone: '',
     documentNumber: '',
     documentType: '',
+    profilePicture: null,
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');  
+  const [modalMessage, setModalMessage] = useState('');
   const [titletTopo, setTitleToponymy] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +30,31 @@ export default function CreacionPage() {
       [name]: value,
     });
     setErrors({ ...errors, [name]: '' });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size > 2 * 1024 * 1024) {
+      setErrors({ ...errors, profilePicture: 'La imagen no debe superar los 2 MB.' });
+      setFormValues({ ...formValues, profilePicture: null });
+    } else {
+      setErrors({ ...errors, profilePicture: '' });
+      setFormValues({ ...formValues, profilePicture: file });
+    }
+  };
+  
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+
+    if (file && file.size > 2 * 1024 * 1024) {
+      setErrors({ ...errors, profilePicture: 'La imagen no debe superar los 2 MB.' });
+      setFormValues({ ...formValues, profilePicture: null });
+    } else {
+      setErrors({ ...errors, profilePicture: '' });
+      setFormValues({ ...formValues, profilePicture: file });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -87,15 +114,15 @@ export default function CreacionPage() {
 
     try {
       const response = await create(formValues);
-
+      
       if (!response.success) {
-        setModalMessage(response.message || "Ocurrió un error en la creación."); 
-        setIsModalOpen(true); 
+        setModalMessage(response.message || 'Ocurrió un error en la creación.');
+        setIsModalOpen(true);
         setTitleToponymy(false);
         return;
       }
       
-      if(response.status === 201) {
+      if (response.status === 201) {
         const newPersonData = await getByDocument(formValues.documentNumber);
         const formatTextWithBold = (text) => text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
@@ -104,14 +131,16 @@ export default function CreacionPage() {
         );
 
         setModalMessage(<ModalContent />);
-        setIsModalOpen(true); 
+        setIsModalOpen(true);
         setTitleToponymy(true);
       }
-
+     
     } catch (error) {
-      console.error("Error al crear persona:", error);
-      setModalMessage("Hubo un problema con el servidor. Inténtalo de nuevo más tarde.");
-      setIsModalOpen(true); 
+     
+
+      console.error('Error al crear persona:', error);
+      setModalMessage('Hubo un problema con el servidor. Inténtalo de nuevo más tarde.');
+      setIsModalOpen(true);
       setTitleToponymy(false);
     } finally {
       setIsLoading(false);
@@ -121,7 +150,6 @@ export default function CreacionPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
   return (
     <div>
       <div className={classes.contenedor_boton_volver}>
@@ -254,6 +282,34 @@ export default function CreacionPage() {
               {errors.documentNumber && <p className={classes.error}>{errors.documentNumber}</p>}
             </div>
           </div>
+          <h1 className={classes.tituloI}>Imagen de Perfil (máx. 2 MB):</h1>
+            <div
+              className={`${classes.imageUpload} ${isDragOver ? classes.dragOver : ''}`}
+              onDrop={handleDrop}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragOver(true);
+              }}
+              onDragLeave={() => setIsDragOver(false)}
+            >
+              <label htmlFor="profilePicture" className={classes.uploadButton}>
+                {formValues.profilePicture ? formValues.profilePicture.name : 'Seleccionar Imagen'}
+              </label>
+
+              <input
+                id="profilePicture"
+                type="file"
+                name="profilePicture"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden" // Escondemos el input real
+              />
+
+              {errors.profilePicture && (
+                <p className={classes.error}>{errors.profilePicture}</p>
+              )}
+            </div>
+
           <div className={classes.boton_enviar}>
             <button type="submit" disabled={isLoading}>
               {isLoading ? "Creando..." : "Crear Persona"}

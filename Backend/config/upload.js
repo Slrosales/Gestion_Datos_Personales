@@ -14,14 +14,14 @@ const upload = multer({
   storage: storage,
   fileFilter: function (req, file, callback) {
     if (['.png', '.jpg', '.jpeg'].includes(path.extname(file.originalname).toLowerCase())) {
-      return callback(null, true);
+      callback(null, true);
     } else {
       console.log('Solo se permiten imágenes');
-      return callback(null, false);
+      callback(new Error('Solo se permiten imágenes en formato PNG, JPG o JPEG'));
     }
   },
   limits: {
-    fileSize: 1024 * 1024 * 2 // Limite de 2MB
+    fileSize: 1024 * 1024 * 2 // Límite de 2MB
   }
 });
 

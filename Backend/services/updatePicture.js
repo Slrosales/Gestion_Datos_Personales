@@ -2,7 +2,8 @@ const Person = require('../models/person.model'); // Asegúrate de esta importac
 const updatePicture = async (req, res) => {
   try {
     const documentNumber = req.params.documentNumber;
-    const profilePicture = req.file ? `uploads/${req.file.filename}` : null;
+    const profilePicture = req.file ? `${req.file.filename}` : null;
+    console.log('profilePicture:', profilePicture);
 
     if (!profilePicture) {
       return res.status(400).send('No se ha proporcionado una imagen de perfil');

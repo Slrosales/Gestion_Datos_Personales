@@ -12,22 +12,40 @@ export const getAll = async () => {
 
 // Función para crear una nueva persona
 export const create = async (personData) => {
-    try {
-        const response = await apiCrear.post('/api/personas/', personData);
-        return {
-            success: true,
-            status: response.status,  // Código de estado de la respuesta
-            data: response.data,  // Datos de la respuesta
-        }  // Retorna todo el objeto de respuesta si todo va bien
-    } catch (error) {
+  try {
+      let response;
+      
+      // Comprobar si profilePicture existe en personData
+      if (personData.profilePicture) {
+          // Crear FormData y añadir cada campo
+          const formData = new FormData();
+          Object.keys(personData).forEach(key => {
+              formData.append(key, personData[key]);
+          });
+
+          // Enviar con FormData (incluye el archivo)
+          response = await apiCrear.post('/api/personas/', formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data'
+              }
+          });
+      } else {
+          // Si no hay imagen, enviar como JSON
+          response = await apiCrear.post('/api/personas/', personData);
+      }
      
-        // Retornar un objeto con el código de error y el mensaje para manejarlo en el frontend
-        return {
-            success: false,
-            status: error.response ? error.response.status : 500,  // Código de estado del error, si existe
-            message: error.response && error.response.data ? error.response.data.message : 'Error desconocido al crear persona',
-        };
-    }
+      return {
+          success: true,
+          status: response.status,
+          data: response.data,
+      };
+  } catch (error) {
+      return {
+          success: false,
+          status: error.response ? error.response.status : 500,
+          message: error.response && error.response.data ? error.response.data.message : 'Error desconocido al crear persona',
+      };
+  }
 };
 
 
@@ -120,3 +138,30 @@ export const updateByDocument = async (documentNumber, personData) => {
     }
   };
 
+  export const update_img = async (documentNumber, formData) => {
+    try {
+        // Verificar el contenido de FormData antes de enviarlo
+        console.log("FormData content:", formData.get('profilePicture')); 
+
+        // Realizar la solicitud de actualización de la imagen
+        const response = await apiCrear.post(`/api/personas/upload/${documentNumber}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        // Retornar respuesta exitosa
+        return {
+            success: true,
+            status: response.status,
+            data: response.data
+        };
+    } catch (error) {
+        console.error('Error al actualizar la imagen de la persona:', error);
+        return {
+            success: false,
+            status: error.response ? error.response.status : 500,
+            message: error.response && error.response.data ? error.response.data.message : 'Error desconocido al actualizar la imagen'
+        };
+    }
+};
