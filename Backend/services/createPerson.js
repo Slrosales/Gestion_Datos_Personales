@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
     if(req.file) {
       person.profilePicture = req.file.filename;
     }else{
-      person.profilePicture = `uploads/profile.png`;
+      person.profilePicture = `profile.jpg`;
     }
 
     // Validar los datos antes de guardar

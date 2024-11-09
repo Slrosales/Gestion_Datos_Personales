@@ -167,8 +167,8 @@ function TarjetaPersona({ Persona, onDelete }) {
               <div className={classes.detalles}>
                 <img 
                   src={updatedPersona.profilePicture 
-                    ? `http://localhost:5000/uploads/${updatedPersona.profilePicture}?t=${imageTimestamp}`
-                    : "ruta/de/imagen/predeterminada.jpg"} // Imagen predeterminada si `profilePicture` es undefined
+                    ? `http://localhost:5000/uploads/${updatedPersona.profilePicture}`
+                    : `http://localhost:5000/uploads/profile.jpg`} // Imagen predeterminada si `profilePicture` es undefined
                   alt="Foto de la persona" 
                   className={classes.profilePicture} 
                 />
