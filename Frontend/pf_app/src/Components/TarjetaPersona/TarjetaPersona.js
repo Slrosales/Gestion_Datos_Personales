@@ -13,14 +13,7 @@ function TarjetaPersona({ Persona, onDelete }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageTimestamp, setImageTimestamp] = useState(Date.now());
 
-  // useEffect para actualizar el timestamp cuando se cambia la imagen de perfil
-  useEffect(() => {
-    if (updatedPersona.profilePicture) {
-      console.log("Imagen actualizada:", updatedPersona.profilePicture);
-      setImageTimestamp(Date.now()); // Actualiza el timestamp para forzar la recarga de la imagen
-    }
-  }, [updatedPersona.profilePicture]);
-
+ 
   // Manejo de modales
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);

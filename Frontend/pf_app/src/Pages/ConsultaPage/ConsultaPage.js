@@ -9,6 +9,8 @@ export default function ConsultaPage() {
   const [documento, setDocumento] = useState([]);
   const [busqueda, setBusqueda] = useState(false);
   const [noencontrada, setNoEncontrada] = useState(false);
+  const [error, setError] = useState(false); // Estado de error
+  const [loading, setLoading] = useState(true); // Estado de carga
 
   const recibirPersona = useCallback((documento) => {
     if (documento.length !== 0) {
@@ -28,7 +30,6 @@ export default function ConsultaPage() {
     }
   };
 
-  // Función para manejar la eliminación de una persona
   const handleDeletePersona = (documentNumber) => {
     setPersona((prevPersonas) => 
       prevPersonas.filter((persona) => persona.documentNumber !== documentNumber)
@@ -36,23 +37,26 @@ export default function ConsultaPage() {
   };
 
   useEffect(() => {
-    if (documento.length !== 0) {
-      setBusqueda(false);
-    }
-
-    // Función para obtener todas las personas
     const fetchData = async () => {
+      setLoading(true); // Asegurarse de activar el estado de carga al inicio
       try {
         const result = await getAll();
-        console.log(result.data.data);
-        setPersona(result.data.data);
+        if (result.data && Array.isArray(result.data.data)) {
+          setPersona(result.data.data);
+          setError(false);
+        } else {
+          throw new Error("Estructura de datos inesperada");
+        }
       } catch (error) {
         console.error("Error al obtener los datos:", error);
+        setError(true); // Marcar el estado de error
+      } finally {
+        setLoading(false); // Asegurarse de desactivar el estado de carga en todas las situaciones
       }
     };
 
     fetchData();
-  }, [documento, busqueda]);
+  }, []); // Se deja el array de dependencias vacío para ejecutar solo al montar el componente
 
   return (
     <div className={classes.principal}>
@@ -62,29 +66,37 @@ export default function ConsultaPage() {
       <div className={classes.titulo_div}>
         <h1 className={classes.titulo}>Personas</h1>
       </div>
-      <Busqueda recibirPersona={recibirPersona} persona_no_encontrada={persona_no_encontrada} />
 
-      <div className={classes.tarjetas}>
-        {!busqueda ? (
-          <>
-            {noencontrada ? (
-              <h1 className={classes.nada}>Persona no encontrada</h1>
+      {loading ? (
+        <h1 className={classes.cargando}>Cargando...</h1> // Muestra el mensaje de carga
+      ) : error ? (
+        <h1 className={classes.nada}>Estamos en mantenimiento, pronto estará resuelto.</h1> // Muestra mensaje de error
+      ) : (
+        <>
+          <Busqueda recibirPersona={recibirPersona} persona_no_encontrada={persona_no_encontrada} />
+          <div className={classes.tarjetas}>
+            {!busqueda ? (
+              <>
+                {noencontrada ? (
+                  <h1 className={classes.nada}>Persona no encontrada</h1>
+                ) : (
+                  <TarjetaPersona key={documento._id} Persona={documento} onDelete={handleDeletePersona} />
+                )}
+              </>
             ) : (
-              <TarjetaPersona key={documento._id} Persona={documento} onDelete={handleDeletePersona} />
+              <>
+                {Persona.length === 0 ? (
+                  <h1 className={classes.nada}>No hay personas registradas</h1>
+                ) : (
+                  Persona.map((persona) => (
+                    <TarjetaPersona key={persona._id} Persona={persona} onDelete={handleDeletePersona} />
+                  ))
+                )}
+              </>
             )}
-          </>
-        ) : (
-          <>
-            {Persona.length === 0 ? (
-              <h1 className={classes.nada}>No hay personas registradas</h1>
-            ) : (
-              Persona.map((persona) => (
-                <TarjetaPersona key={persona._id} Persona={persona} onDelete={handleDeletePersona} />
-              ))
-            )}
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

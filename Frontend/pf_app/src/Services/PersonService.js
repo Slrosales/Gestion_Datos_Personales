@@ -5,10 +5,10 @@ export const getAll = async () => {
         const response = await apiConsultas.get('/api/person-query/all');
         return response;  // Retorna todo el objeto de respuesta
     } catch (error) {
-       
-        return { data: [] };  // Retorna un objeto vacío en caso de error
+        throw new Error("Error en la obtención de datos");  // Lanza una excepción en caso de error
     }
 };
+
 
 // Función para crear una nueva persona
 export const create = async (personData) => {
@@ -43,7 +43,7 @@ export const create = async (personData) => {
       return {
           success: false,
           status: error.response ? error.response.status : 500,
-          message: error.response && error.response.data ? error.response.data.message : 'Error desconocido al crear persona',
+          message: error.response && error.response.data ? error.response.data.message : 'Ahora mismo no se puede crear la persona, inténtelo más tarde',
       };
   }
 };
@@ -52,7 +52,7 @@ export const create = async (personData) => {
 // Buscar persona por documento
 export const getByDocument = async (documentNumber) => {
     try {
-        const response = await apiConsultas.get(`/api/person-query/${documentNumber}`);
+        const response = await apiCrear.get(`/api/personas/${documentNumber}`);
         return response;  // Retorna todo el objeto de respuesta
     } catch (error) {
         

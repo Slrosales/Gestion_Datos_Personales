@@ -1,5 +1,8 @@
 /Frontend/pf_app/node_modules
 /Backend/node_modules
 /person-query-service/node_modules
+/Backend/uploads/*
+!/Backend/uploads/.gitkeep
+
 __azurite_db_blob__.json
 __azurite_db_blob__extent.json

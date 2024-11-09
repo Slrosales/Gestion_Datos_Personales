@@ -41,3 +41,8 @@
     width: 30vw;
     height: 8vw;
   }
+  .cargando{
+    @apply  m-auto  flex items-center justify-center text-2xl text-rose-500; ;
+    width: 30vw;
+    height: 8vw;
+  }
