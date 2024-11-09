@@ -11,7 +11,6 @@ function TarjetaPersona({ Persona, onDelete }) {
   const birthDateRef = useRef(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [imageTimestamp, setImageTimestamp] = useState(Date.now());
 
  
   // Manejo de modales
@@ -19,7 +18,9 @@ function TarjetaPersona({ Persona, onDelete }) {
   const handleCloseModal = () => setIsModalOpen(false);
   const handleOpenUpdateModal = () => setIsUpdateModalOpen(true);
   const handleCloseUpdateModal = () => setIsUpdateModalOpen(false);
-
+  const formatTextWithBold = (text) => {
+    return text.replace(/\*\s*(.*?)\s*\*/g, '<strong>$1</strong>');
+  };
   // Eliminar Persona
   const handleDelete = async () => {
     const response = await deleteByDocument(Persona.documentNumber);
@@ -189,6 +190,16 @@ function TarjetaPersona({ Persona, onDelete }) {
                 <p><span className={classes.color}>Género:</span> {updatedPersona.gender}</p>
               </div>
             </div>
+            <div className={classes.toponimia}>
+              <h2> <span className={classes.color}>Toponimia: </span></h2>
+              
+            <p className={classes.parrafo}
+            dangerouslySetInnerHTML={{
+              __html: ` ${formatTextWithBold(Persona.toponymy)}`,
+            }}
+          ></p>
+              </div>
+            
             <div className={classes.botones}>
               <button className={classes.boton_g} onClick={handleCloseModal}>Cerrar</button>
               <button className={classes.boton_c} onClick={handleOpenUpdateModal}>Actualizar</button>
