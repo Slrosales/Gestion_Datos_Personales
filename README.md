@@ -5,7 +5,7 @@
   </h1>
 
 [![GitHub Slrosales](https://img.shields.io/badge/by-Slrosales-purple)](https://github.com/Slrosales)  
-[![GitHub lellerena](https://img.shields.io/badge/by-Rubens1414-red)](https://github.com/Rubens1414)
+[![GitHub lellerena](https://img.shields.io/badge/by-Rubens1414-blue)](https://github.com/Rubens1414)
 </div>
 
 ## Descripción del Proyecto
